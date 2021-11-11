@@ -1,8 +1,9 @@
 import pandas as pd
+import os
 from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 
-pd.set_option('display.max_rows', 100)
+pd.set_option('display.max_rows', 1000)
 pd.set_option('display.max_columns', 200)
 pd.set_option('display.width', 1000)
 
@@ -15,4 +16,7 @@ oh = oh.groupby(level=0, axis=1).sum()
 fi = apriori(oh, min_support=0.03, use_colnames=True)
 
 rules = association_rules(fi, metric="lift", min_threshold=1)
-print(rules.head(100))
+print(rules)
+
+outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_03_minL_1.csv'
+rules.to_csv(outputPath, index=True)
