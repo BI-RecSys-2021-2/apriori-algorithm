@@ -17,16 +17,16 @@ df = pd.read_csv("./data/input/groceries_categorized.csv")
 oh = pd.get_dummies(df.drop(columns=['Item(s)'], axis=1), prefix='', prefix_sep='')
 oh = oh.groupby(level=0, axis=1).sum()
 
-fi = apriori(oh, min_support=0.03, use_colnames=True)
+fi = apriori(oh, min_support=0.005, use_colnames=True)
 
 rules = association_rules(fi, metric="lift", min_threshold=1)
 #print(rules)
 
 rules['antecedents'] = rules['antecedents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
 rules['consequents'] = rules['consequents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
+rules = rules.sort_values("lift", ascending=False)
 
-
-outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_03_minL_1.csv'
+outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_005_minL_1.csv'
 rules.to_csv(outputPath, index=True)
 
 # max_i = 4
