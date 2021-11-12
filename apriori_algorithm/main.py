@@ -22,18 +22,22 @@ fi = apriori(oh, min_support=0.005, use_colnames=True)
 rules = association_rules(fi, metric="lift", min_threshold=1)
 #print(rules)
 
-outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_02_minL_1.csv'
-#rules.to_csv(outputPath, index=True)
+rules['antecedents'] = rules['antecedents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
+rules['consequents'] = rules['consequents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
 
-max_i = 4
-for i, row in rules.iterrows():
-    print("Rule: " + list(row['antecedents'])[0] + " => " + list(row['consequents'])[0])
-    print("Support: " + str(round(row['support'], 2)))
-    print("Confidence: " + str(round(row['confidence'], 2)))
-    print("Lift: " + str(round(row['lift'], 2)))
-    print("========================================")
-    if i == max_i:
-        break
+
+outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_005_minL_1.csv'
+rules.to_csv(outputPath, index=True)
+
+# max_i = 4
+# for i, row in rules.iterrows():
+#     print("Rule: " + list(row['antecedents'])[0] + " => " + list(row['consequents'])[0])
+#     print("Support: " + str(round(row['support'], 2)))
+#     print("Confidence: " + str(round(row['confidence'], 2)))
+#     print("Lift: " + str(round(row['lift'], 2)))
+#     print("========================================")
+#     if i == max_i:
+#         break
 
 support = rules['support']
 confidence = rules['confidence']
