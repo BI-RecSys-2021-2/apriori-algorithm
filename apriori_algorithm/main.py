@@ -17,30 +17,14 @@ df = pd.read_csv("./data/input/groceries_categorized.csv")
 oh = pd.get_dummies(df.drop(columns=['Item(s)'], axis=1), prefix='', prefix_sep='')
 oh = oh.groupby(level=0, axis=1).sum()
 
-fi = apriori(oh, min_support=0.005, use_colnames=True)
+fi = apriori(oh, min_support=0.01, use_colnames=True)
 
 rules = association_rules(fi, metric="lift", min_threshold=1)
 #print(rules)
 
 rules['antecedents'] = rules['antecedents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
 rules['consequents'] = rules['consequents'].apply(lambda x: ', '.join(list(x))).astype("unicode")
-rules = rules.sort_values("lift", ascending=False)
-
-outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_005_minL_1.csv'
-rules.to_csv(outputPath, index=True)
-
-# max_i = 4
-# for i, row in rules.iterrows():
-#     print("Rule: " + list(row['antecedents'])[0] + " => " + list(row['consequents'])[0])
-#     print("Support: " + str(round(row['support'], 2)))
-#     print("Confidence: " + str(round(row['confidence'], 2)))
-#     print("Lift: " + str(round(row['lift'], 2)))
-#     print("========================================")
-#     if i == max_i:
-#         break
-
-support = rules['support']
-confidence = rules['confidence']
+#rules = rules.sort_values("lift", ascending=False)
 
 all_confidences = []
 collective_strengths = []
@@ -67,6 +51,9 @@ rules['all-confidence'] = all_confidences
 rules['collective strength'] = collective_strengths
 rules['cosine similarity'] = cosine_similarities
 
+outputPath = r'/Users/yejoolee/Library/Mobile Documents/com~apple~CloudDocs/2021-2/비즈니스인텔리전스/팀플/backend/apriori_algorithm/data/output/minS_01_minL_1.csv'
+rules.to_csv(outputPath, index=True)
+
 h = 347
 s = 1
 v = 1
@@ -83,9 +70,9 @@ fig.set_facecolor('white')
 for i, measure in enumerate(measures):
     ax = fig.add_subplot(320+i+1)
     if measure != 'all-confidence':
-        scatter = ax.scatter(support, confidence, c=rules[measure], cmap=cmap)
+        scatter = ax.scatter(rules['support'], rules['confidence'], c=rules[measure], cmap=cmap)
     else:
-        scatter = ax.scatter(support, confidence, c=rules['all-confidence'].map(lambda x: [v for k,v in x.items()][0]), cmap=cmap)
+        scatter = ax.scatter(rules['support'], rules['confidence'], c=rules['all-confidence'].map(lambda x: [v for k,v in x.items()][0]), cmap=cmap)
     ax.set_xlabel('support')
     ax.set_ylabel('confidence')
     ax.set_title(measure)
